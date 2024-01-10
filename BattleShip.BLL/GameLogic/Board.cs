@@ -23,6 +23,8 @@ namespace BattleShip.BLL.GameLogic
             _currentShipIndex = 0;
         }
 
+
+
         //Method 1
         public FireShotResponse FireShot(Coordinate coordinate)
         {
@@ -112,30 +114,27 @@ namespace BattleShip.BLL.GameLogic
 
                 ShotStatus status = ship.FireAtShip(coordinate);
 
-                switch (status)
+                // reduce data clumps
+                if (status == ShotStatus.Hit || status == ShotStatus.HitAndSunk)
                 {
-                    case ShotStatus.HitAndSunk:
-                        response.ShotStatus = ShotStatus.HitAndSunk;
-                        response.ShipImpacted = ship.ShipName;
-                        ShotHistory.Add(coordinate, Responses.ShotHistory.Hit);
-                        break;
-                    case ShotStatus.Hit:
-                        response.ShotStatus = ShotStatus.Hit;
-                        response.ShipImpacted = ship.ShipName;
-                        ShotHistory.Add(coordinate, Responses.ShotHistory.Hit);
-                        break;
+                    response.ShotStatus = status;
+                    response.ShipImpacted = ship.ShipName;
+                    ShotHistory.Add(coordinate, Responses.ShotHistory.Hit);
                 }
+                else
+                {
+                    ShotHistory.Add(coordinate, Responses.ShotHistory.Miss);
+                }
+
 
                 // if they hit something, no need to continue looping
                 if (status != ShotStatus.Miss)
                     break;
             }
-
-            if (response.ShotStatus == ShotStatus.Miss)
-            {
-                ShotHistory.Add(coordinate, Responses.ShotHistory.Miss);
-            }
         }
+
+
+
         //3rd method
         private bool IsValidCoordinate(Coordinate coordinate)
         {
@@ -143,7 +142,7 @@ namespace BattleShip.BLL.GameLogic
             coordinate.YCoordinate >= 1 && coordinate.YCoordinate <= yCoordinator;
         }
 
-        //4th method
+        //4th method (Refactoring)
         private ShipPlacement PlaceShip(Coordinate coordinate, Ship newShip, Func<int, int> calculateNextX, Func<int, int> calculateNextY)
         {
             int positionIndex = 0;
