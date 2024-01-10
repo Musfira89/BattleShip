@@ -9,8 +9,12 @@ namespace BattleShip.BLL.GameLogic
 {
     public class Board
     {
+
+        // Compile-Time Evaluation:
         public const int xCoordinator = 10; //size of the board
         public const int yCoordinator = 10;
+        private const int NumberOfShips = 5; //Constant Propagation:
+
         private Dictionary<Coordinate, ShotHistory> ShotHistory;
         private int _currentShipIndex; //keep track of the index of the current ship being placed on the game board.
         public Ship[] Ships { get; private set; }  //array
@@ -19,7 +23,8 @@ namespace BattleShip.BLL.GameLogic
         public Board()
         {
             ShotHistory = new Dictionary<Coordinate, ShotHistory>();
-            Ships = new Ship[5];
+
+            Ships = new Ship[NumberOfShips];
             _currentShipIndex = 0;
         }
 
