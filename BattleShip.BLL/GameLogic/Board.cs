@@ -144,89 +144,15 @@ namespace BattleShip.BLL.GameLogic
         }
 
         //4th method
-        private ShipPlacement PlaceShipRight(Coordinate coordinate, Ship newShip)
+        private ShipPlacement PlaceShip(Coordinate coordinate, Ship newShip, Func<int, int> calculateNextX, Func<int, int> calculateNextY)
         {
-            // y coordinate gets bigger
-            int positionIndex = 0;
-            int maxY = coordinate.YCoordinate + newShip.BoardPositions.Length;
-
-            for (int i = coordinate.YCoordinate; i < maxY; i++)
-            {
-                var currentCoordinate = new Coordinate(coordinate.XCoordinate, i);
-                if (!IsValidCoordinate(currentCoordinate))
-                    return ShipPlacement.NotEnoughSpace;
-
-                if (OverlapsAnotherShip(currentCoordinate))
-                    return ShipPlacement.Overlap;
-
-                newShip.BoardPositions[positionIndex] = currentCoordinate;
-                positionIndex++;
-            }
-
-            AddShipToBoard(newShip);
-            return ShipPlacement.Ok;
-        }
-
-        //5th method
-        private ShipPlacement PlaceShipLeft(Coordinate coordinate, Ship newShip)
-        {
-            // y coordinate gets smaller
-            int positionIndex = 0;
-            int minY = coordinate.YCoordinate - newShip.BoardPositions.Length;
-
-            for (int i = coordinate.YCoordinate; i > minY; i--)
-            {
-                var currentCoordinate = new Coordinate(coordinate.XCoordinate, i);
-
-                if (!IsValidCoordinate(currentCoordinate))
-                    return ShipPlacement.NotEnoughSpace;
-
-                if (OverlapsAnotherShip(currentCoordinate))
-                    return ShipPlacement.Overlap;
-
-                newShip.BoardPositions[positionIndex] = currentCoordinate;
-                positionIndex++;
-            }
-
-            AddShipToBoard(newShip);
-            return ShipPlacement.Ok;
-        }
-
-        //6th method
-        private ShipPlacement PlaceShipUp(Coordinate coordinate, Ship newShip)
-        {
-            // x coordinate gets smaller
-            int positionIndex = 0;
-            int minX = coordinate.XCoordinate - newShip.BoardPositions.Length;
-
-            for (int i = coordinate.XCoordinate; i > minX; i--)
-            {
-                var currentCoordinate = new Coordinate(i, coordinate.YCoordinate);
-
-                if (!IsValidCoordinate(currentCoordinate))
-                    return ShipPlacement.NotEnoughSpace;
-
-                if (OverlapsAnotherShip(currentCoordinate))
-                    return ShipPlacement.Overlap;
-
-                newShip.BoardPositions[positionIndex] = currentCoordinate;
-                positionIndex++;
-            }
-
-            AddShipToBoard(newShip);
-            return ShipPlacement.Ok;
-        }
-
-        //7th method
-        private ShipPlacement PlaceShipDown(Coordinate coordinate, Ship newShip)
-        {
-            // y coordinate gets bigger
             int positionIndex = 0;
             int maxX = coordinate.XCoordinate + newShip.BoardPositions.Length;
+            int maxY = coordinate.YCoordinate + newShip.BoardPositions.Length;
 
-            for (int i = coordinate.XCoordinate; i < maxX; i++)
+            for (int i = coordinate.XCoordinate, j = coordinate.YCoordinate; i < maxX && j < maxY; i = calculateNextX(i), j = calculateNextY(j))
             {
-                var currentCoordinate = new Coordinate(i, coordinate.YCoordinate);
+                var currentCoordinate = new Coordinate(i, j);
 
                 if (!IsValidCoordinate(currentCoordinate))
                     return ShipPlacement.NotEnoughSpace;
@@ -242,7 +168,28 @@ namespace BattleShip.BLL.GameLogic
             return ShipPlacement.Ok;
         }
 
-        //8th method
+        private ShipPlacement PlaceShipRight(Coordinate coordinate, Ship newShip)
+        {
+            return PlaceShip(coordinate, newShip, x => x + 1, y => y);
+        }
+
+        private ShipPlacement PlaceShipLeft(Coordinate coordinate, Ship newShip)
+        {
+            return PlaceShip(coordinate, newShip, x => x - 1, y => y);
+        }
+
+        private ShipPlacement PlaceShipUp(Coordinate coordinate, Ship newShip)
+        {
+            return PlaceShip(coordinate, newShip, x => x, y => y - 1);
+        }
+
+        private ShipPlacement PlaceShipDown(Coordinate coordinate, Ship newShip)
+        {
+            return PlaceShip(coordinate, newShip, x => x, y => y + 1);
+        }
+
+
+        //5th method
         private void AddShipToBoard(Ship newShip)
         {
             Ships[_currentShipIndex] = newShip;
