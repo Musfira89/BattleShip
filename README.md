@@ -23,8 +23,5 @@ A classic BattleShip game implementation in C#.
 ## Testing
 To run the tests, use a testing framework like NUnit. Run the tests in your IDE or through the command line.
 
-## Contributors
-- Musfira Ansari
-
 ## Contact Information
 For inquiries, please contact musfiraansari05@gmail.com.
