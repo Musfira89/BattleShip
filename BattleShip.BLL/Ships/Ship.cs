@@ -12,11 +12,18 @@ namespace BattleShip.BLL.Ships
         private int _lifeRemaining;
         public bool IsSunk { get { return _lifeRemaining == 0; } }
 
+        public ShipType Destroyer { get; }
+
         public Ship(ShipType shipType, int numberOfSlots)
         {
             ShipType = shipType;
             _lifeRemaining = numberOfSlots;
             BoardPositions = new Coordinate[numberOfSlots];
+        }
+
+        public Ship(ShipType destroyer)
+        {
+            Destroyer = destroyer;
         }
 
         public ShotStatus FireAtShip(Coordinate position)
