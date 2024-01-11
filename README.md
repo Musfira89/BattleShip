@@ -26,8 +26,5 @@ To run the tests, use a testing framework like NUnit. Run the tests in your IDE 
 ## Contributors
 - Musfira Ansari
 
-## License
-This project is licensed under the [MIT License](LICENSE).
-
 ## Contact Information
 For inquiries, please contact musfiraansari05@gmail.com.
